@@ -45,9 +45,10 @@ function loadImage(file) {
   img.onload = function() {
     contextInputImage.clearRect(0, 0, 400, 300);
     contextInputImage.drawImage(img, 0, 0, 400, 300);
-    var imageData = getImageData(img);
-    drawHistogram(contextInputHistogram, imageData);
-    drawAccumulated(contextInputAccumulated, imageData);
+
+    var histogram = getHistogram(getImageData(img));
+    drawGraph(contextInputHistogram, histogram.normalized);
+    drawGraph(contextInputAccumulated, histogram.accumulated);
   }
 
   fileReader.readAsDataURL(file);
@@ -66,36 +67,14 @@ function getImageData(img) {
   return result;
 }
 
-function drawHistogram(context, imageData) {
-  var histogram = getHistogram(imageData);
+function drawGraph(context, data) {
   var lineWidth = 400 / 256;
   context.clearRect(0, 0, 400, 300);
   context.beginPath();
   context.lineWidth = lineWidth;
   for (var i = 0; i < 256 ; i += 1) {
     context.moveTo(i * lineWidth, 300);
-    context.lineTo(i * lineWidth, 300 - histogram[i] * 300);
-  }
-  context.strokeStyle = '#ff0000';
-  context.stroke();
-}
-
-function drawAccumulated(context, imageData) {
-  var histogram = getHistogram(imageData);
-  var lineWidth = 400 / 256;
-  var acc = 0;
-
-  for (var i = 0; i < 256; i += 1) {
-    acc += histogram[i];
-    histogram[i] = acc;
-  }
-
-  context.clearRect(0, 0, 400, 300);
-  context.beginPath();
-  context.lineWidth = lineWidth;
-  for (var i = 0; i < 256 ; i += 1) {
-    context.moveTo(i * lineWidth, 300);
-    context.lineTo(i * lineWidth, 300 - histogram[i] * 300);
+    context.lineTo(i * lineWidth, 300 - data[i] * 300);
   }
   context.strokeStyle = '#ff0000';
   context.stroke();
@@ -104,9 +83,12 @@ function drawAccumulated(context, imageData) {
 function getHistogram(imageData) {
   var size = imageData.width * imageData.height;
   var histogram = [];
+  var accumulated = [];
+  var acc = 0;
 
   for (var i = 0; i< 256; i += 1) {
     histogram[i] = 0;
+    accumulated[i] = 0;
   }
   for (var i = 0; i < size; i += 1) {
     histogram[imageData.data[i*4+1]] += 1;
@@ -116,7 +98,15 @@ function getHistogram(imageData) {
     histogram[i] /= size;
   }
 
-  return histogram;
+  for (var i = 0; i< 256; i += 1) {
+    acc += histogram[i];
+    accumulated[i] = acc;
+  }
+
+  return {
+    normalized: histogram,
+    accumulated: accumulated,
+  };
 }
 
 window.addEventListener('load', function() {
