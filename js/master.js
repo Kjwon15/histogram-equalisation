@@ -1,9 +1,9 @@
-var contextInputImage;
 var contextInputHistogram;
 var contextInputAccumulated;
-var contextOutputImage;
 var contextOutputHistogram;
 var contextOutputAccumulated;
+var imgInput;
+var imgOutput;
 
 function dragOverHandler(event) {
   event.preventDefault();
@@ -25,35 +25,27 @@ function dropHandler(event) {
   event.stopPropagation();
 
   this.classList.remove('over');
-
   var files = event.dataTransfer.files;
-
-  var context = this.getContext('2d');
-
   loadImage(files[0]);
 }
 
 function loadImage(file) {
   var fileReader = new FileReader();
-  var img = new Image();
 
 
   fileReader.onloadend = function() {
-    img.src = fileReader.result;
+    imgInput.src = fileReader.result;
   }
 
-  img.onload = function() {
-    contextInputImage.clearRect(0, 0, 400, 300);
-    contextInputImage.drawImage(img, 0, 0, 400, 300);
-
-    var imageData = getImageData(img);
+  imgInput.onload = function() {
+    var imageData = getImageData(imgInput);
     var histogram = getHistogram(imageData);
     drawGraph(contextInputHistogram, histogram.normalized);
     drawGraph(contextInputAccumulated, histogram.accumulated);
 
     var equalisedImage = equalise(histogram, imageData);
     var equalisedHistogram = getHistogram(equalisedImage);
-    contextOutputImage.putImageData(equalisedImage, 0, 0, 0, 0, 400, 300);
+    imgOutput.src=getImage(equalisedImage);
     drawGraph(contextOutputHistogram, equalisedHistogram.normalized);
     drawGraph(contextOutputAccumulated, equalisedHistogram.accumulated);
   }
@@ -70,6 +62,21 @@ function getImageData(img) {
   canvas.height = img.naturalHeight;
   context.drawImage(img, 0, 0);
   result = context.getImageData(0, 0, img.naturalWidth, img.naturalHeight);
+  canvas.remove();
+  return result;
+}
+
+function getImage(imageData) {
+  var canvas = document.createElement('canvas');
+  var context = canvas.getContext('2d');
+  var result;
+
+  canvas.width = imageData.width;
+  canvas.height = imageData.height;
+
+  context.putImageData(imageData, 0, 0);
+
+  result = canvas.toDataURL();
   canvas.remove();
   return result;
 }
@@ -137,12 +144,12 @@ function equalise(histogram, imageData) {
 }
 
 window.addEventListener('load', function() {
-  contextInputImage = document.querySelector('.input .image').getContext('2d');
   contextInputHistogram = document.querySelector('.input .histogram').getContext('2d');
   contextInputAccumulated = document.querySelector('.input .accumulated').getContext('2d');
-  contextOutputImage = document.querySelector('.output .image').getContext('2d');
   contextOutputHistogram = document.querySelector('.output .histogram').getContext('2d');
   contextOutputAccumulated = document.querySelector('.output .accumulated').getContext('2d');
+  imgInput = document.querySelector('.input .image');
+  imgOutput = document.querySelector('.output .image');
 
   var inputBox = document.querySelector('.input .image');
   inputBox.addEventListener('dragover', dragOverHandler);
