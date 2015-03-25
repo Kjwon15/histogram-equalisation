@@ -5,8 +5,7 @@ var contextOutputImage;
 var contextOutputHistogram;
 var contextOutputAccumulated;
 
-var imageWidth;
-var imageHeight;
+var imageData;
 
 function dragOverHandler(event) {
   event.preventDefault();
@@ -33,31 +32,25 @@ function dropHandler(event) {
 
   var context = this.getContext('2d');
 
-  drawImage(files[0]);
+  loadImage(files[0]);
 }
 
-function drawImage(file) {
+function loadImage(file) {
   var fileReader = new FileReader();
   var img = new Image();
-  var imageData;
 
 
   fileReader.onloadend = function() {
-    imageData = fileReader.result;
-    img.src = imageData;
+    img.src = fileReader.result;
   }
 
   img.onload = function() {
-    imageWidth = img.naturalWidth;
-    imageHeight = img.naturalHeight;
     contextInputImage.drawImage(img, 0, 0, 400, 300);
-    drawHistogram(contextInputHistogram, imageData);
   }
 
   fileReader.readAsDataURL(file);
 }
 
-function drawHistogram(context, data) {
 }
 
 window.addEventListener('load', function() {
