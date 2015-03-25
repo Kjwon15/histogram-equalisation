@@ -5,8 +5,6 @@ var contextOutputImage;
 var contextOutputHistogram;
 var contextOutputAccumulated;
 
-var imageData;
-
 function dragOverHandler(event) {
   event.preventDefault();
   event.stopPropagation();
@@ -45,12 +43,80 @@ function loadImage(file) {
   }
 
   img.onload = function() {
+    contextInputImage.clearRect(0, 0, 400, 300);
     contextInputImage.drawImage(img, 0, 0, 400, 300);
+    var imageData = getImageData(img);
+    drawHistogram(contextInputHistogram, imageData);
+    drawAccumulated(contextInputAccumulated, imageData);
   }
 
   fileReader.readAsDataURL(file);
 }
 
+function getImageData(img) {
+  var canvas = document.createElement('canvas');
+  var context = canvas.getContext('2d');
+  var result;
+
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  context.drawImage(img, 0, 0);
+  result = context.getImageData(0, 0, img.naturalWidth, img.naturalHeight);
+  canvas.remove();
+  return result;
+}
+
+function drawHistogram(context, imageData) {
+  var histogram = getHistogram(imageData);
+  var lineWidth = 400 / 256;
+  context.clearRect(0, 0, 400, 300);
+  context.beginPath();
+  context.lineWidth = lineWidth;
+  for (var i = 0; i < 256 ; i += 1) {
+    context.moveTo(i * lineWidth, 300);
+    context.lineTo(i * lineWidth, 300 - histogram[i] * 300);
+  }
+  context.strokeStyle = '#ff0000';
+  context.stroke();
+}
+
+function drawAccumulated(context, imageData) {
+  var histogram = getHistogram(imageData);
+  var lineWidth = 400 / 256;
+  var acc = 0;
+
+  for (var i = 0; i < 256; i += 1) {
+    acc += histogram[i];
+    histogram[i] = acc;
+  }
+
+  context.clearRect(0, 0, 400, 300);
+  context.beginPath();
+  context.lineWidth = lineWidth;
+  for (var i = 0; i < 256 ; i += 1) {
+    context.moveTo(i * lineWidth, 300);
+    context.lineTo(i * lineWidth, 300 - histogram[i] * 300);
+  }
+  context.strokeStyle = '#ff0000';
+  context.stroke();
+}
+
+function getHistogram(imageData) {
+  var size = imageData.width * imageData.height;
+  var histogram = [];
+
+  for (var i = 0; i< 256; i += 1) {
+    histogram[i] = 0;
+  }
+  for (var i = 0; i < size; i += 1) {
+    histogram[imageData.data[i*4+1]] += 1;
+  }
+
+  for (var i = 0; i < 256; i += 1) {
+    histogram[i] /= size;
+  }
+
+  return histogram;
 }
 
 window.addEventListener('load', function() {
