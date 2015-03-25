@@ -124,15 +124,12 @@ function getHistogram(imageData) {
 }
 
 function equalise(histogram, imageData) {
-  var equalised = [];
   var accumulated = [];
   var acc = 0;
   var newImageData = new Object(imageData);
   var size = newImageData.width * newImageData.height;
+  var equalised = histogram.accumulated;
 
-  for (var i = 0; i < 256; i += 1) {
-    equalised[i] = histogram.accumulated[i] * 255;
-  }
 
   for (var i = 0; i < size; i += 1) {
     newImageData.data[i*4] = equalised[imageData.data[i*4]];
