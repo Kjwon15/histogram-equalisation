@@ -46,9 +46,16 @@ function loadImage(file) {
     contextInputImage.clearRect(0, 0, 400, 300);
     contextInputImage.drawImage(img, 0, 0, 400, 300);
 
-    var histogram = getHistogram(getImageData(img));
+    var imageData = getImageData(img);
+    var histogram = getHistogram(imageData);
     drawGraph(contextInputHistogram, histogram.normalized);
     drawGraph(contextInputAccumulated, histogram.accumulated);
+
+    var equalisedImage = equalise(histogram, imageData);
+    var equalisedHistogram = getHistogram(equalisedImage);
+    contextOutputImage.putImageData(equalisedImage, 0, 0, 0, 0, 400, 300);
+    drawGraph(contextOutputHistogram, equalisedHistogram.normalized);
+    drawGraph(contextOutputAccumulated, equalisedHistogram.accumulated);
   }
 
   fileReader.readAsDataURL(file);
@@ -107,6 +114,26 @@ function getHistogram(imageData) {
     normalized: histogram,
     accumulated: accumulated,
   };
+}
+
+function equalise(histogram, imageData) {
+  var equalised = [];
+  var accumulated = [];
+  var acc = 0;
+  var newImageData = new Object(imageData);
+  var size = newImageData.width * newImageData.height;
+
+  for (var i = 0; i < 256; i += 1) {
+    equalised[i] = histogram.accumulated[i] * 255;
+  }
+
+  for (var i = 0; i < size; i += 1) {
+    newImageData.data[i*4] = equalised[imageData.data[i*4]];
+    newImageData.data[i*4+1] = equalised[imageData.data[i*4+1]];
+    newImageData.data[i*4+2] = equalised[imageData.data[i*4+2]];
+  }
+
+  return imageData;
 }
 
 window.addEventListener('load', function() {
