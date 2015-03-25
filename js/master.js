@@ -132,9 +132,9 @@ function equalise(histogram, imageData) {
 
 
   for (var i = 0; i < size; i += 1) {
-    newImageData.data[i*4] = equalised[imageData.data[i*4]];
-    newImageData.data[i*4+1] = equalised[imageData.data[i*4+1]];
-    newImageData.data[i*4+2] = equalised[imageData.data[i*4+2]];
+    newImageData.data[i*4] = equalised[imageData.data[i*4]] * 255;
+    newImageData.data[i*4+1] = equalised[imageData.data[i*4+1]] * 255;
+    newImageData.data[i*4+2] = equalised[imageData.data[i*4+2]] * 255;
   }
 
   return imageData;
