@@ -87,8 +87,8 @@ function drawGraph(context, data) {
   context.beginPath();
   context.lineWidth = lineWidth;
   for (var i = 0; i < 256 ; i += 1) {
-    context.moveTo(i * lineWidth, 300);
-    context.lineTo(i * lineWidth, 300 - data[i] * 300);
+    context.moveTo((i + 0.5) * lineWidth, 300);
+    context.lineTo((i + 0.5) * lineWidth, 300 - data[i] * 300);
   }
   context.strokeStyle = '#ff0000';
   context.stroke();
