@@ -35,7 +35,7 @@ function loadImage(file) {
 
   fileReader.onloadend = function() {
     imgInput.src = fileReader.result;
-  }
+  };
 
   imgInput.onload = function() {
     var imageData = getImageData(imgInput);
@@ -48,7 +48,7 @@ function loadImage(file) {
     imgOutput.src=getImage(equalisedImage);
     drawGraph(contextOutputHistogram, equalisedHistogram.normalized);
     drawGraph(contextOutputAccumulated, equalisedHistogram.accumulated);
-  }
+  };
 
   fileReader.readAsDataURL(file);
 }
@@ -152,7 +152,7 @@ function toRgb(y, u, v) {
     r: r,
     g: g,
     b: b,
-  }
+  };
 }
 
 function equalise(histogram, imageData) {
