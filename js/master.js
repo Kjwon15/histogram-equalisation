@@ -25,17 +25,14 @@ function dropHandler(event) {
   event.stopPropagation();
 
   this.classList.remove('over');
-  var files = event.dataTransfer.files;
-  loadImage(files[0]);
+  if (event.dataTransfer.files[0]) {
+    loadImage(event.dataTransfer.files[0]);
+  } else {
+    loadImage(event.dataTransfer.getData('url'));
+  }
 }
 
 function loadImage(file) {
-  var fileReader = new FileReader();
-
-
-  fileReader.onloadend = function() {
-    imgInput.src = fileReader.result;
-  };
 
   imgInput.onload = function() {
     var imageData = getImageData(imgInput);
@@ -50,7 +47,19 @@ function loadImage(file) {
     drawGraph(contextOutputAccumulated, equalisedHistogram.accumulated);
   };
 
-  fileReader.readAsDataURL(file);
+  if (file instanceof File) {
+    var fileReader = new FileReader();
+    fileReader.onloadend = function() {
+      imgInput.removeAttribute('crossOrigin');
+      imgInput.src = fileReader.result;
+    };
+
+    fileReader.readAsDataURL(file);
+  } else {
+    imgInput.setAttribute('crossOrigin', 'anonymous');
+    imgInput.src = file;
+  }
+
 }
 
 function getImageData(img) {

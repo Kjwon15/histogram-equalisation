@@ -13,6 +13,13 @@ canvas.view {
   min-width: 300px;
 }
 
+.input .image:after {
+  position: absolute;
+  margin: auto auto;
+  display: inline-block;
+  content: 'Drag image here';
+}
+
 .over {
   border-color: green;
 }
