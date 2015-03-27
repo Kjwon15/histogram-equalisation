@@ -13,10 +13,15 @@ function dragOverHandler(event) {
 }
 
 function dragEnterHandler(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  console.log(this);
   this.classList.add('over');
 }
 
 function dragLeaveHandler(event) {
+  event.preventDefault();
+  event.stopPropagation();
   this.classList.remove('over');
 }
 
@@ -195,9 +200,8 @@ window.addEventListener('load', function() {
   imgInput = document.querySelector('.input .image');
   imgOutput = document.querySelector('.output .image');
 
-  var inputBox = document.querySelector('.input .image');
-  inputBox.addEventListener('dragover', dragOverHandler);
-  inputBox.addEventListener('drop', dropHandler);
-  inputBox.addEventListener('dragenter', dragEnterHandler);
-  inputBox.addEventListener('dragleave', dragLeaveHandler);
+  imgInput.addEventListener('dragover', dragOverHandler);
+  imgInput.addEventListener('drop', dropHandler);
+  imgInput.addEventListener('dragenter', dragEnterHandler);
+  imgInput.addEventListener('dragleave', dragLeaveHandler);
 });
