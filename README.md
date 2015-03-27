@@ -26,3 +26,22 @@ I recommend to use [Mozilla FireFox][] 35+ or [Google Chrome][] 40+
 
 [Mozilla Firefox]: https://firefox.com/
 [Google Chrome]: https://google.com/chrome
+
+
+References
+----------
+
+### Histogram equlisation:
+
+* http://kylim.tistory.com/220
+* http://en.wikipedia.org/wiki/Histogram_equalization
+
+
+### Translate color space between RGB and YUV
+
+* http://en.wikipedia.org/wiki/YUV
+
+
+### Native drag and drop implementation
+
+* http://blog.teamtreehouse.com/implementing-native-drag-and-drop
