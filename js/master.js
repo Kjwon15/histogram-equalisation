@@ -29,6 +29,11 @@ function dropHandler(event) {
   event.preventDefault();
   event.stopPropagation();
 
+  contextInputHistogram.clearRect(0, 0, 400, 300);
+  contextInputAccumulated.clearRect(0, 0, 400, 300);
+  contextOutputHistogram.clearRect(0, 0, 400, 300);
+  contextOutputAccumulated.clearRect(0, 0, 400, 300);
+
   this.classList.remove('over');
   if (event.dataTransfer.files[0]) {
     loadImage(event.dataTransfer.files[0]);
@@ -97,7 +102,6 @@ function getImage(imageData) {
 
 function drawGraph(context, data) {
   var lineWidth = 400 / 256;
-  context.clearRect(0, 0, 400, 300);
   context.beginPath();
   context.lineWidth = lineWidth;
   for (var i = 0; i < 256 ; i += 1) {
