@@ -15,7 +15,6 @@ function dragOverHandler(event) {
 function dragEnterHandler(event) {
   event.preventDefault();
   event.stopPropagation();
-  console.log(this);
   this.classList.add('over');
 }
 
