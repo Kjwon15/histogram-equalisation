@@ -28,10 +28,7 @@ function dropHandler(event) {
   event.preventDefault();
   event.stopPropagation();
 
-  contextInputHistogram.clearRect(0, 0, 400, 300);
-  contextInputAccumulated.clearRect(0, 0, 400, 300);
-  contextOutputHistogram.clearRect(0, 0, 400, 300);
-  contextOutputAccumulated.clearRect(0, 0, 400, 300);
+  clearGraphs();
 
   this.classList.remove('over');
   if (event.dataTransfer.files[0]) {
@@ -39,6 +36,19 @@ function dropHandler(event) {
   } else {
     loadImage(event.dataTransfer.getData('url'));
   }
+}
+
+function fileChangeHandler(event) {
+  var file = event.target.files[0];
+  clearGraphs();
+  loadImage(file);
+}
+
+function clearGraphs() {
+  contextInputHistogram.clearRect(0, 0, 400, 300);
+  contextInputAccumulated.clearRect(0, 0, 400, 300);
+  contextOutputHistogram.clearRect(0, 0, 400, 300);
+  contextOutputAccumulated.clearRect(0, 0, 400, 300);
 }
 
 function loadImage(file) {
@@ -57,6 +67,10 @@ function loadImage(file) {
   };
 
   if (file instanceof File) {
+    if (file.type.startsWith('image/') === false) {
+      alert('This is not an image file.');
+      return;
+    }
     var fileReader = new FileReader();
     fileReader.onloadend = function() {
       imgInput.removeAttribute('crossOrigin');
@@ -207,4 +221,7 @@ window.addEventListener('load', function() {
   imgInput.addEventListener('drop', dropHandler);
   imgInput.addEventListener('dragenter', dragEnterHandler);
   imgInput.addEventListener('dragleave', dragLeaveHandler);
+
+  var fileSelector = document.querySelector('#file');
+  fileSelector.addEventListener('change', fileChangeHandler);
 });
