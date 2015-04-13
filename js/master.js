@@ -144,12 +144,9 @@ function getHistogram(imageData) {
   }
 
   for (var i = 0; i < 256; i += 1) {
-    histogram[i] /= size;
-  }
-
-  for (var i = 0; i< 256; i += 1) {
     acc += histogram[i];
-    accumulated[i] = acc;
+    histogram[i] /= size;
+    accumulated[i] = acc / size;
   }
 
   return {
