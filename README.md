@@ -4,16 +4,12 @@ Histogram Equalisation
 A Simple web application for demonstrate image histogram equalisation.
 
 
-Install
--------
-
-Just open `index.html` in modern web browser.
-
-
 Usage
 -----
 
-Drag an image into the box.
+* Just open `index.html` in modern web browser.
+* Drag an image into the box.
+* Or Select an image file via file selector.
 
 
 Browser requirements
@@ -45,3 +41,8 @@ References
 ### Native drag and drop implementation
 
 * http://blog.teamtreehouse.com/implementing-native-drag-and-drop
+
+
+### Reading file via file selector
+
+* http://www.html5rocks.com/en/tutorials/file/dndfiles/?redirect_from_locale=ko
